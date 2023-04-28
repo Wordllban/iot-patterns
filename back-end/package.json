@@ -21,7 +21,10 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrate": "npx prisma migrate dev",
     "studio": "npx prisma studio",
-    "reset": "npx prisma db push --force-reset"
+    "reset": "npx prisma db push --force-reset",
+    "csv:generate": "node -r ts-node/register -r tsconfig-paths/register ./src/console.ts generate",
+    "csv:push": "node -r ts-node/register -r tsconfig-paths/register ./src/console.ts push",
+    "db:rewrite": "yarn reset && yarn csv:generate && yarn csv:push"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -55,7 +58,7 @@
     "supertest": "^6.1.3",
     "ts-jest": "28.0.1",
     "ts-loader": "^9.2.3",
-    "ts-node": "^10.0.0",
+    "ts-node": "^10.9.1",
     "tsconfig-paths": "4.0.0",
     "typescript": "^4.3.5"
   },

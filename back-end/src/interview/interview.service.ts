@@ -9,7 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class InterviewService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createInterviewDto: CreateInterviewDto) {
     const { interviewersIds, candidateId, vacancyId, feedback, result } =
@@ -59,8 +59,13 @@ export class InterviewService {
     }
   }
 
-  findAll() {
-    return `This action returns all interview`;
+  async findAll() {
+    try {
+      const interviews = await this.prisma.interview.findMany();
+      return interviews;
+    } catch (error) {
+      throw new ForbiddenException(error);
+    }
   }
 
   async findOne(id: number) {
@@ -91,7 +96,16 @@ export class InterviewService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} interview`;
+  async remove(id: number) {
+    try {
+      const interview = await this.prisma.interview.delete({
+        where: {
+          id,
+        },
+      });
+      return interview;
+    } catch (error) {
+      throw new ForbiddenException(error);
+    }
   }
 }

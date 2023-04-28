@@ -43,6 +43,7 @@ export class RecruiterController {
   remove(@Param('id') id: string) {
     return this.recruiterService.remove(+id);
   }
+
   @Post()
   makeInterview(@Body() createInterviewDto: CreateInterviewDto) {
     return this.recruiterService.makeInterview(createInterviewDto);

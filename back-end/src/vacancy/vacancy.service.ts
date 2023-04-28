@@ -9,7 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class VacancyService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createVacancyDto: CreateVacancyDto) {
     const { description, requirements, recruiterId } = createVacancyDto;
@@ -47,19 +47,56 @@ export class VacancyService {
     }
   }
 
-  findAll() {
-    return `This action returns all vacancy`;
+  async findAll() {
+    try {
+      const vacancies = await this.prisma.vacancy.findMany();
+      return vacancies;
+    } catch (error) {
+      throw new ForbiddenException(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} vacancy`;
+  async findOne(id: number) {
+    try {
+      const vacancy = await this.prisma.vacancy.findUnique({
+        where: {
+          id,
+        },
+      });
+      return vacancy;
+    } catch (error) {
+      throw new ForbiddenException(error);
+    }
   }
 
-  update(id: number, updateVacancyDto: UpdateVacancyDto) {
-    return `This action updates a #${id} vacancy`;
+  async update(id: number, updateVacancyDto: UpdateVacancyDto) {
+    try {
+      const vacancy = await this.prisma.vacancy.update({
+        where: {
+          id,
+        },
+        data: {
+          ...updateVacancyDto,
+        },
+      });
+
+      return vacancy;
+    } catch (error) {
+      throw new ForbiddenException(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} vacancy`;
+  async remove(id: number) {
+    try {
+      const vacancy = await this.prisma.vacancy.delete({
+        where: {
+          id,
+        },
+      });
+
+      return vacancy;
+    } catch (error) {
+      throw new ForbiddenException(error);
+    }
   }
 }

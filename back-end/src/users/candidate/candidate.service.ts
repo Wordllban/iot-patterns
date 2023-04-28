@@ -10,7 +10,7 @@ import { ApplyToVacancyDto } from './dto/apply-to-vacancy.dto';
 
 @Injectable()
 export class CandidateService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createCandidateDto: CreateCandidateDto) {
     const { email, firstName, lastName, hash, type } = createCandidateDto;
@@ -37,20 +37,72 @@ export class CandidateService {
     }
   }
 
-  findAll() {
-    return `This action returns all candidate`;
+  async findAll() {
+    try {
+      const candidates = await this.prisma.candidate.findMany();
+
+      return candidates;
+    } catch (error) {
+      throw new ForbiddenException(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} candidate`;
+  async findOne(id: number) {
+    try {
+      const candidate = await this.prisma.candidate.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          user: true,
+        },
+      });
+
+      return candidate;
+    } catch (error) {
+      throw new ForbiddenException(error);
+    }
   }
 
-  update(id: number, updateCandidateDto: UpdateCandidateDto) {
-    return `This action updates a #${id} candidate`;
+  async update(id: number, updateCandidateDto: UpdateCandidateDto) {
+    try {
+      const candidate = await this.prisma.candidate.update({
+        where: {
+          id,
+        },
+        data: {
+          user: {
+            update: {
+              ...updateCandidateDto,
+            },
+          },
+        },
+        include: {
+          user: true,
+        },
+      });
+
+      return candidate;
+    } catch (error) {
+      throw new ForbiddenException(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} candidate`;
+  async remove(id: number) {
+    try {
+      const candidate = await this.prisma.candidate.delete({
+        where: {
+          id,
+        },
+        include: {
+          user: true,
+        },
+      });
+
+      return candidate;
+    } catch (error) {
+      throw new ForbiddenException(error);
+    }
   }
 
   async applyToVacancy(applyToVacancyDto: ApplyToVacancyDto) {

@@ -57,12 +57,11 @@ model Vacancy {
   requirements String[]
   applies Candidate[]
 
-  recruiter Recruiter @relation(fields: [recruiterId], references: [id])
+  recruiter Recruiter @relation(fields: [recruiterId], references: [id], onDelete: Cascade, onUpdate: Cascade) 
   recruiterId Int
 
   interviews Interview[]
 }
-// todo: create relation with vacancy
 model Interview {
   id Int @id @default(autoincrement())
   feedback String?
@@ -70,7 +69,7 @@ model Interview {
   interviewers Recruiter[]
   candidate Candidate @relation(fields: [candidateId], references: [id])
   candidateId Int
-  vacancy Vacancy @relation(fields: [vacancyId], references: [id])
+  vacancy Vacancy @relation(fields: [vacancyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   vacancyId Int
 }
 
