@@ -47,7 +47,11 @@ export class RecruiterService {
 
   async findAll() {
     try {
-      const recruiters = await this.prisma.recruiter.findMany();
+      const recruiters = await this.prisma.recruiter.findMany({
+        include: {
+          user: true,
+        },
+      });
       return recruiters;
     } catch (error) {
       throw new ForbiddenException(error);

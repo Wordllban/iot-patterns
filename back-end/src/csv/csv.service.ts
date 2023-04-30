@@ -12,7 +12,6 @@ import {
   CandidateEntity,
   InterviewEntity,
 } from './entity';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 const RECRUITERS_NUMBER: number = 50 as const;
 const CANDIDATES_NUMBER: number = 500 as const;
@@ -28,7 +27,6 @@ export class CSVService {
     private readonly interview: InterviewService,
     private readonly candidate: CandidateService,
     private readonly recruiter: RecruiterService,
-    private readonly prisma: PrismaService,
   ) {}
 
   parseCSV(csvString: string) {

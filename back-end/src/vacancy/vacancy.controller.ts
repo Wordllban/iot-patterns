@@ -1,15 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { VacancyService } from './vacancy.service';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
+import { SearchVacancyByDto } from './dto/search-vacancy-by.dto';
 
 @Controller('vacancy')
 export class VacancyController {
   constructor(private readonly vacancyService: VacancyService) {}
 
   @Post()
-  create(@Body() createVacancyDto: CreateVacancyDto) {
-    return this.vacancyService.create(createVacancyDto);
+  create(@Body() createVacancyDto: { data: CreateVacancyDto }) {
+    return this.vacancyService.create(createVacancyDto.data);
+  }
+
+  @Get('/search')
+  search(@Query() query: SearchVacancyByDto) {
+    return this.vacancyService.search(query);
   }
 
   @Get()
@@ -23,8 +38,11 @@ export class VacancyController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVacancyDto: UpdateVacancyDto) {
-    return this.vacancyService.update(+id, updateVacancyDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateVacancyDto: { data: UpdateVacancyDto },
+  ) {
+    return this.vacancyService.update(+id, updateVacancyDto.data);
   }
 
   @Delete(':id')

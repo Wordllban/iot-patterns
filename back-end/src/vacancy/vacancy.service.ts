@@ -6,13 +6,15 @@ import {
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { SearchVacancyByDto } from './dto/search-vacancy-by.dto';
+import { Vacancy } from '@prisma/client';
 
 @Injectable()
 export class VacancyService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createVacancyDto: CreateVacancyDto) {
-    const { description, requirements, recruiterId } = createVacancyDto;
+    const { title, description, requirements, recruiterId } = createVacancyDto;
     try {
       const recruiter = await this.prisma.recruiter.findUnique({
         where: {
@@ -36,6 +38,7 @@ export class VacancyService {
 
       const vacancy = this.prisma.vacancy.create({
         data: {
+          title,
           description,
           requirements,
           recruiterId: +recruiterId,
@@ -96,6 +99,25 @@ export class VacancyService {
 
       return vacancy;
     } catch (error) {
+      throw new ForbiddenException(error);
+    }
+  }
+
+  async search(dto: SearchVacancyByDto) {
+    const { recruiterId } = dto;
+    try {
+      const vacancies = await this.prisma.vacancy.findMany({
+        where: {
+          recruiterId: +recruiterId,
+        },
+      });
+
+      return vacancies.map((vacancy: Vacancy) => {
+        delete vacancy.recruiterId;
+        return vacancy;
+      });
+    } catch (error) {
+      console.log(error);
       throw new ForbiddenException(error);
     }
   }
